@@ -35,8 +35,8 @@ func readEnvs() {
 	promPort = os.Getenv("prom_port")
 	traceAgentUrl = os.Getenv("trace_agent_url")
 	traceCollectortUrl = os.Getenv("trace_collector_url")
-	ginServerUrl = os.Getenv("gin_server_url")
-	grpcServerUrl = os.Getenv("grpc_server_url")
+	ginServerUrl = os.Getenv("ginserver_url")
+	grpcServerUrl = os.Getenv("grpcserver_url")
 }
 
 // if you want send traffic to agent then please specify agentUrl, if you want send traffic directly to collector then specify collectorUrl
