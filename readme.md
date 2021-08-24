@@ -8,4 +8,5 @@ kubectl port-forward $(kubectl -n observability get pod | grep "my-jaeger" | awk
 kubectl create namespace try
 cd helm
 helm install -n try -f values.yaml observer-sample-go .
+helm delete -n try observer-sample-go
 ```

@@ -7,4 +7,4 @@ httpserver:
   prom_port: "9090"
   trace_agent_url: "localhost:6831"
   trace_collector_url: ""
-  ginserver_url: "ginserver:8081"
+  ginserver_url: "http://ginserver:8081"

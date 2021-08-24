@@ -95,7 +95,7 @@ func main() {
 	r.Use(ginhttp.Middleware(opentracing.GlobalTracer())) // add open-tracing middleware
 
 	r.GET("/api1/:name", api1)
-	r.Run(fmt.Sprintf("127.0.0.1:%s", port))
+	r.Run(fmt.Sprintf(":%s", port))
 }
 
 func api1(c *gin.Context) {
