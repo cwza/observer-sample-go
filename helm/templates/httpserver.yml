@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpserver
+spec:
+  selector:
+    matchLabels:
+      app: httpserver
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: httpserver
+    spec:
+      containers:
+      - name: httpserver
+        image: cwza/observer-sample-go:latest
+        command: ["/httpserver"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: port
+          value: "{{ .Values.httpserver.port }}"
+        - name: prom_port
+          value: "{{ .Values.httpserver.prom_port }}"
+        - name: trace_agent_url
+          value: "{{ .Values.httpserver.trace_agent_url }}"
+        - name: trace_collector_url
+          value: "{{ .Values.httpserver.trace_collector_url }}"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpserver
+  labels:
+    monitoring: "true"
+spec:
+  selector:
+    app: httpserver
+  ports:
+    - protocol: TCP
+      name: app
+      port: {{ .Values.httpserver.port }}
+      targetPort: {{ .Values.httpserver.port }}
+    - protocol: TCP
+      name: metrics
+      port: {{ .Values.httpserver.prom_port }}
+      targetPort: {{ .Values.httpserver.prom_port }}

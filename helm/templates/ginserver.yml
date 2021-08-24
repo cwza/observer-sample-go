@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ginserver
+spec:
+  selector:
+    matchLabels:
+      app: ginserver
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ginserver
+    spec:
+      containers:
+      - name: ginserver
+        image: cwza/observer-sample-go:latest
+        command: ["/ginserver"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: port
+          value: "{{ .Values.ginserver.port }}"
+        - name: trace_agent_url
+          value: "{{ .Values.ginserver.trace_agent_url }}"
+        - name: trace_collector_url
+          value: "{{ .Values.ginserver.trace_collector_url }}"
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ginserver
+  labels:
+    monitoring: "true"
+spec:
+  selector:
+    app: ginserver
+  ports:
+    - protocol: TCP
+      name: metrics
+      port: {{ .Values.ginserver.port }}
+      targetPort: {{ .Values.ginserver.port }}

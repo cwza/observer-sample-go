@@ -1,0 +1,9 @@
+ginserver:
+  port: "8081"
+  trace_agent_url: "localhost:6831"
+  trace_collector_url: ""
+httpserver:
+  port: "8080"
+  prom_port: "9090"
+  trace_agent_url: "localhost:6831"
+  trace_collector_url: ""
