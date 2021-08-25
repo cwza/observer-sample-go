@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: ginserver
   annotations:
-    "sidecar.jaegertracing.io/inject": "true" # <1>
+    "sidecar.jaegertracing.io/inject": "true"
 spec:
   selector:
     matchLabels:

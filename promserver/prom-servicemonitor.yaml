@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: common-monitor
+  labels:
+    release: prometheus
+spec:
+  endpoints:
+  - port: metrics
+    interval: 60s
+    path: /metrics
+  jobLabel: monitoring
+  namespaceSelector:
+    any: true  # <- important
+  selector:
+    matchLabels:
+      monitoring: "true"  # <- should match what you've chosen as common

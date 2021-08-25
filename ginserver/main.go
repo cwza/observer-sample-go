@@ -27,10 +27,21 @@ var (
 	traceCollectortUrl string
 )
 
+var (
+	returnErr bool
+)
+
 func readEnvs() {
-	port = os.Getenv("port")
-	traceAgentUrl = os.Getenv("trace_agent_url")
-	traceCollectortUrl = os.Getenv("trace_collector_url")
+	getEnv := func(key string) string {
+		val := os.Getenv(key)
+		if val == "" {
+			log.Fatalf("failed to getEnv, key: %s", key)
+		}
+		return val
+	}
+	port = getEnv("port")
+	traceAgentUrl = getEnv("trace_agent_url")
+	traceCollectortUrl = getEnv("trace_collector_url")
 }
 
 // if you want send traffic to agent then please specify agentUrl, if you want send traffic directly to collector then specify collectorUrl
@@ -88,7 +99,6 @@ func main() {
 	p := ginprom.New(
 		ginprom.Engine(r),
 		ginprom.Namespace(serviceName),
-		ginprom.Subsystem("gin"),
 		ginprom.Path("/metrics"),
 	)
 	r.Use(p.Instrument())                                 // add prometheus middleware
@@ -110,7 +120,14 @@ func api1(c *gin.Context) {
 
 	name := c.Param("name")
 	str := hello(ctx, name)
-	c.String(http.StatusOK, str)
+
+	if !returnErr {
+		c.String(http.StatusOK, str)
+		returnErr = !returnErr
+	} else {
+		c.String(http.StatusInternalServerError, "error message")
+		returnErr = !returnErr
+	}
 }
 
 func hello(ctx context.Context, name string) string {

@@ -31,12 +31,19 @@ var (
 )
 
 func readEnvs() {
-	port = os.Getenv("port")
-	promPort = os.Getenv("prom_port")
-	traceAgentUrl = os.Getenv("trace_agent_url")
-	traceCollectortUrl = os.Getenv("trace_collector_url")
-	ginServerUrl = os.Getenv("ginserver_url")
-	grpcServerUrl = os.Getenv("grpcserver_url")
+	getEnv := func(key string) string {
+		val := os.Getenv(key)
+		if val == "" {
+			log.Fatalf("failed to getEnv, key: %s", key)
+		}
+		return val
+	}
+	port = getEnv("port")
+	promPort = getEnv("prom_port")
+	traceAgentUrl = getEnv("trace_agent_url")
+	traceCollectortUrl = getEnv("trace_collector_url")
+	ginServerUrl = getEnv("ginserver_url")
+	grpcServerUrl = getEnv("grpcserver_url")
 }
 
 // if you want send traffic to agent then please specify agentUrl, if you want send traffic directly to collector then specify collectorUrl
@@ -91,9 +98,7 @@ func main() {
 	defer traceCloser.Close()
 
 	mdlw := prommiddleware.New(prommiddleware.Config{
-		Recorder: prommetrics.NewRecorder(prommetrics.Config{
-			Prefix: serviceName,
-		}),
+		Recorder: prommetrics.NewRecorder(prommetrics.Config{}),
 	})
 
 	mux := http.NewServeMux()
@@ -147,5 +152,6 @@ func run(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// call grpcserver
-	fmt.Fprintln(w, "HiHi")
+
+	fmt.Fprintln(w, "Success")
 }
