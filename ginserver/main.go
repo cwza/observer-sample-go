@@ -32,16 +32,16 @@ var (
 )
 
 func readEnvs() {
-	getEnv := func(key string) string {
+	getNoneEmptyEnv := func(key string) string {
 		val := os.Getenv(key)
 		if val == "" {
 			log.Fatalf("failed to getEnv, key: %s", key)
 		}
 		return val
 	}
-	port = getEnv("port")
-	traceAgentUrl = getEnv("trace_agent_url")
-	traceCollectortUrl = getEnv("trace_collector_url")
+	port = getNoneEmptyEnv("port")
+	traceAgentUrl = os.Getenv("trace_agent_url")
+	traceCollectortUrl = os.Getenv("trace_collector_url")
 }
 
 // if you want send traffic to agent then please specify agentUrl, if you want send traffic directly to collector then specify collectorUrl
